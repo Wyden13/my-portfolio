@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="text-center py-4 text-[var(--text-secondary)] bg-[--background]">
+    <footer className="site-footer relative z-10 py-4 text-center text-[var(--text-secondary)]">
       <div className="mb-2">
         <button
           id="github"

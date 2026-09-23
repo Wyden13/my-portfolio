@@ -1,32 +1,27 @@
 import Link from "next/link";
+import ThemeToggle from "../ui/ThemeToggle";
 
 export default function Header() {
   return (
-    <header className="text-[var(--text-primary)] bg-[var(--background)] py-8 p-12 flex flex-row justify-between items-center">
-      <div className="flex-1">
-        <Link href="/" className="text-2xl font-bold">
-          My portfolio
+    <header className="site-header relative z-10 flex flex-col items-start gap-5 px-4 py-6 text-[var(--text-primary)] sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
+      <Link href="/" className="shrink-0 text-2xl font-bold">
+        My portfolio
+      </Link>
+      <nav
+        className="flex w-full items-center justify-between gap-3 text-sm sm:w-auto sm:justify-end sm:gap-8 sm:text-base"
+        aria-label="Main navigation"
+      >
+        <Link href="/projects" className="hover:text-[var(--text-secondary)]">
+          Projects
         </Link>
-      </div>
-      <div className="flex-1">
-        <nav className="flex flex-row gap-8 justify-end">
-          <Link href="about" className="hover:text-[var(--text-secondary)]">
-            About
-          </Link>
-          <Link href="projects" className="hover:text-[var(--text-secondary)]">
-            Projects
-          </Link>
-          <Link
-            href="inspiration"
-            className="hover:text-[var(--text-secondary)]"
-          >
-            Inspiration
-          </Link>
-          <Link href="contact" className="hover:text-[var(--text-secondary)]">
-            Contact
-          </Link>
-        </nav>
-      </div>
+        <Link href="/posts" className="hover:text-[var(--text-secondary)]">
+          Posts
+        </Link>
+        <Link href="/contact" className="hover:text-[var(--text-secondary)]">
+          Contact
+        </Link>
+        <ThemeToggle />
+      </nav>
     </header>
   );
 }

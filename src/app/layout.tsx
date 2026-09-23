@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { notoSans, robotoCondensed } from "./ui/fonts";
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
-import StarBackground from "@/components/StarBackground";
 import { ThemeProvider } from "next-themes";
 
 // const geistSans = Geist({
@@ -33,12 +30,12 @@ export default function RootLayout({
       className={`${robotoCondensed.variable} ${notoSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col bg-white relative">
-        <StarBackground />
+      <body className="relative flex min-h-screen flex-col bg-[var(--background)] text-[var(--text-primary)]">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="system"
-          enableSystem={true}
+          enableSystem
+          enableColorScheme
           storageKey="theme"
         >
           <Header />

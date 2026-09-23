@@ -1,7 +1,7 @@
 "use client";
-import MusicBarDivider from "./MusicBarDivider";
+import MusicBarDivider from "./ui/MusicBarDivider";
 import { useState, useEffect } from "react";
-import ProjectCard from "./ProjectCard";
+import ProjectCard from "./ui/ProjectCard";
 import { fetchGitHubRepos } from "@/lib/helper";
 
 export default function ProjectGallery({ username }: { username: string }) {
@@ -19,7 +19,7 @@ export default function ProjectGallery({ username }: { username: string }) {
           `GitHub API error: ${response.status} ${response.statusText}`,
         );
       }
-      setProjects(data || []);
+      setProjects(await data);
     } catch (error: any) {
       setError(error);
     } finally {
@@ -49,36 +49,30 @@ export default function ProjectGallery({ username }: { username: string }) {
     );
   }
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-12">
-      <div className="flex flex-row items-center gap-4">
-        <h1 className="text-6xl whitespace-nowrap">Latest Projects</h1>
-        <MusicBarDivider />
-      </div>
-      <div>
-        {loading && <p className="text-gray-700 mt-4">Loading projects...</p>}
-        {errorMessage && (
-          <p className="text-red-500 mt-4">Error: {errorMessage}</p>
-        )}
-        {!loading && !errorMessage && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {projects.length > 0 ? (
-              projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  name={project.name}
-                  description={project.description}
-                  url={project.html_url}
-                  language={project.language}
-                  stargazers_count={project.stargazers_count}
-                  updated_at={project.updated_at}
-                />
-              ))
-            ) : (
-              <p className="text-gray-700 mt-4">No projects found</p>
-            )}
-          </div>
-        )}
-      </div>
+    <div>
+      {loading && <p className="text-gray-700 mt-4">Loading projects...</p>}
+      {errorMessage && (
+        <p className="text-red-500 mt-4">Error: {errorMessage}</p>
+      )}
+      {!loading && !errorMessage && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                name={project.name}
+                description={project.description}
+                url={project.html_url}
+                language={project.language}
+                stargazers_count={project.stargazers_count}
+                updated_at={project.updated_at}
+              />
+            ))
+          ) : (
+            <p className="text-gray-700 mt-4">No projects found</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
