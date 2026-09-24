@@ -4,8 +4,8 @@ import ThemeToggle from "../ui/ThemeToggle";
 export default function Header() {
   return (
     <header className="site-header relative z-10 flex flex-col items-start gap-5 px-4 py-6 text-[var(--text-primary)] sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-      <Link href="/" className="shrink-0 text-2xl font-bold">
-        My portfolio
+      <Link href="/" className="site-header__logo shrink-0 text-2xl font-bold">
+        Wendy Nguyen
       </Link>
       <nav
         className="flex w-full items-center justify-between gap-3 text-sm sm:w-auto sm:justify-end sm:gap-8 sm:text-base"

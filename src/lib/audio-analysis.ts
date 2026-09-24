@@ -16,7 +16,10 @@ export function frequencyLevel(
 ) {
   const binHz = sampleRate / fftSize;
   const start = Math.max(1, Math.floor(lowHz / binHz));
-  const end = Math.min(data.length, Math.max(start + 1, Math.ceil(highHz / binHz)));
+  const end = Math.min(
+    data.length,
+    Math.max(start + 1, Math.ceil(highHz / binHz)),
+  );
   let power = 0;
   for (let index = start; index < end; index++) {
     power += (data[index] / 255) ** 2;
@@ -30,10 +33,17 @@ export function followLevel(current: number, target: number, delta: number) {
   return current + (target - current) * (1 - Math.exp(-delta / response));
 }
 
-export function spectrumRange(index: number, count: number, sampleRate: number) {
+export function spectrumRange(
+  index: number,
+  count: number,
+  sampleRate: number,
+) {
   const low = 30;
-  const high = Math.min(16000, sampleRate / 2);
+  const high = Math.min(16000, sampleRate);
   // DOM order is top to bottom: treble first, bass last.
   const band = count - 1 - index;
-  return [low * (high / low) ** (band / count), low * (high / low) ** ((band + 1) / count)];
+  return [
+    low * (high / low) ** (band / count),
+    low * (high / low) ** ((band + 1) / count),
+  ];
 }

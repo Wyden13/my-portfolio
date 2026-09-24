@@ -1,5 +1,5 @@
 import "./globals.css";
-import { notoSans, robotoCondensed } from "./ui/fonts";
+import { minecraftFont, notoSans } from "./ui/fonts";
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { ThemeProvider } from "next-themes";
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${robotoCondensed.variable} ${notoSans.variable} h-full antialiased`}
+      className={`${minecraftFont.variable} ${notoSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="relative flex min-h-screen flex-col bg-[var(--background)] text-[var(--text-primary)]">

@@ -38,7 +38,7 @@ export default async function PostPage({ params }: PostPageProps) {
     : "Unknown date";
 
   return (
-    <div className="flex flex-col items-center gap-6 py-6">
+    <div className="page-typography flex flex-col items-center gap-6 py-6">
       {/* Main wrapper for styling */}
       <div className="mx-auto w-full max-w-[768px] px-4">
         {/* Back button */}

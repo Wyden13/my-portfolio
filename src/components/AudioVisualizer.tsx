@@ -4,10 +4,16 @@
 /* eslint-disable react-hooks/immutability */
 
 import "@/lib/three-logging";
+import "./AudioVisualizer.css";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Sparkles } from "@react-three/drei";
+import { Float } from "@react-three/drei";
 import { createPortal } from "react-dom";
-import PressButton from "@/components/ui/PressButton";
+import { useTheme } from "next-themes";
+import CubeParticles from "@/components/CubeParticles";
+import VisualizerColors, {
+  useVisualizerPalette,
+} from "@/components/VisualizerColors";
+import type { VisualizerPalette } from "@/lib/visualizer-palette";
 import MobiusParticleRing from "@/components/MobiusParticleRing";
 import {
   type AudioBands,
@@ -18,6 +24,7 @@ import {
 import ParticleCloud from "@/components/ParticleCloud";
 import {
   type MutableRefObject,
+  type CSSProperties,
   useEffect,
   useRef,
   useState,
@@ -100,7 +107,7 @@ function VisualizerCamera() {
   const size = useThree((state) => state.size);
 
   useEffect(() => {
-    // Leave room for the fully expanded strip, including in portrait layouts.
+    // Preserve the original framing; the 2.5× sculpture deliberately crops at the edges.
     camera.position.z =
       9.2 / Math.min(1, size.width / Math.max(1, size.height));
     camera.updateProjectionMatrix();
@@ -112,9 +119,11 @@ function VisualizerCamera() {
 function VisualizerScene({
   analyserRef,
   isPlaying,
+  palette,
 }: {
   analyserRef: MutableRefObject<AnalyserNode | null>;
   isPlaying: boolean;
+  palette: VisualizerPalette;
 }) {
   const bands = useRef<AudioBands>({
     bass: 0,
@@ -123,6 +132,11 @@ function VisualizerScene({
     energy: 0,
     beat: 0,
   });
+  const clock = useRef(0);
+  useFrame((_, delta) => {
+    clock.current +=
+      Math.min(delta, 0.1) * (0.65 + bands.current.energy * 1.25);
+  }, -0.5);
 
   return (
     <>
@@ -132,20 +146,19 @@ function VisualizerScene({
         isPlaying={isPlaying}
       />
       <VisualizerCamera />
-      <fog attach="fog" args={["#F9F6EE", 12, 22]} />
-      <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.2}>
-        <ParticleCloud bands={bands} />
-        <MobiusParticleRing bands={bands} />
-      </Float>
-      <Sparkles
-        key={isPlaying ? "playing" : "idle"}
-        count={isPlaying ? 70 : 42}
-        scale={[5, 3.5, 3]}
-        size={1.15}
-        speed={isPlaying ? 0.35 : 0.12}
-        color="#FFE675"
-        opacity={0.48}
-      />
+      <group scale={1.0}>
+        <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.2}>
+          <ParticleCloud bands={bands} clock={clock} palette={palette} />
+          <MobiusParticleRing bands={bands} clock={clock} palette={palette} />
+        </Float>
+        <CubeParticles
+          kind="floating"
+          bands={bands}
+          clock={clock}
+          palette={palette}
+          playing={isPlaying}
+        />
+      </group>
     </>
   );
 }
@@ -170,12 +183,14 @@ function AudioPlayerButton({
   onToggle: () => void;
 }) {
   return (
-    <PressButton
+    <button
+      type="button"
       className={`audio-controls__play${isPlaying ? " is-playing" : ""}`}
       onClick={onToggle}
+      aria-label={isPlaying ? "Pause music" : "Play music"}
     >
       <PlayIcon playing={isPlaying} />
-    </PressButton>
+    </button>
   );
 }
 
@@ -285,9 +300,11 @@ function MusicWave({
 function AudioBackgroundPortal({
   analyserRef,
   isPlaying,
+  palette,
 }: {
   analyserRef: MutableRefObject<AnalyserNode | null>;
   isPlaying: boolean;
+  palette: VisualizerPalette;
 }) {
   const isClient = useSyncExternalStore(
     subscribeToClient,
@@ -298,30 +315,71 @@ function AudioBackgroundPortal({
   if (!isClient) return null;
 
   return createPortal(
+    <AudioBackground
+      analyserRef={analyserRef}
+      isPlaying={isPlaying}
+      palette={palette}
+    />,
+    document.body,
+  );
+}
+
+function AudioBackground({
+  analyserRef,
+  isPlaying,
+  palette,
+}: {
+  analyserRef: MutableRefObject<AnalyserNode | null>;
+  isPlaying: boolean;
+  palette: VisualizerPalette;
+}) {
+  const style = {
+    "--visualizer-start": palette.backgroundStart,
+    "--visualizer-middle": palette.backgroundMiddle,
+    "--visualizer-end": palette.backgroundEnd,
+    "--visualizer-glow-1": palette.glowPrimary,
+    "--visualizer-glow-2": palette.glowSecondary,
+  } as CSSProperties;
+
+  return (
     <>
-      <div className="audio-background" aria-hidden="true">
+      <div className="audio-background" aria-hidden="true" style={style}>
         <div className="audio-background__canvas">
           <Canvas
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 9.2], fov: 42, far: 100 }}
             gl={{ antialias: true, alpha: true }}
           >
-            <VisualizerScene analyserRef={analyserRef} isPlaying={isPlaying} />
+            <VisualizerScene
+              analyserRef={analyserRef}
+              isPlaying={isPlaying}
+              palette={palette}
+            />
           </Canvas>
         </div>
       </div>
       <MusicWave analyserRef={analyserRef} isPlaying={isPlaying} />
-    </>,
-    document.body,
+    </>
   );
 }
 
+function formatTime(seconds: number) {
+  return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0")}`;
+}
+
 export default function AudioVisualizer() {
+  const { resolvedTheme } = useTheme();
+  const theme = resolvedTheme === "dark" ? "dark" : "light";
+  const colors = useVisualizerPalette(theme);
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const prepareAudio = () => {
     const audio = audioRef.current;
@@ -384,21 +442,60 @@ export default function AudioVisualizer() {
 
   return (
     <>
-      <AudioBackgroundPortal analyserRef={analyserRef} isPlaying={isPlaying} />
+      <AudioBackgroundPortal
+        analyserRef={analyserRef}
+        isPlaying={isPlaying}
+        palette={colors.palette}
+      />
 
-      <div className="audio-controls" aria-label="Audio player">
-        <AudioPlayerButton isPlaying={isPlaying} onToggle={togglePlayback} />
+      <section className="audio-controls" aria-label="Audio player">
+        <VisualizerColors theme={theme} {...colors} />
+        <div className="audio-controls__track">
+          <div className="audio-controls__info">
+            <span className="audio-controls__title">Love Letter</span>
+            <span className="audio-controls__artist">
+              YOASOBI · Instrumental
+            </span>
+          </div>
+          <AudioPlayerButton isPlaying={isPlaying} onToggle={togglePlayback} />
+        </div>
+        <div className="audio-controls__timeline">
+          <span>{formatTime(currentTime)}</span>
+          <input
+            type="range"
+            aria-label="Seek music"
+            aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
+            min={0}
+            max={duration || 1}
+            step={0.1}
+            value={currentTime}
+            disabled={!duration}
+            onChange={(event) => {
+              const time = Number(event.target.value);
+              if (audioRef.current) audioRef.current.currentTime = time;
+              setCurrentTime(time);
+            }}
+          />
+          <span>{formatTime(duration)}</span>
+        </div>
 
         <audio
           ref={audioRef}
           preload="metadata"
           playsInline
           src="/yoasobi_tabun.mp3"
+          onDurationChange={(event) => {
+            const value = event.currentTarget.duration;
+            setDuration(Number.isFinite(value) ? value : 0);
+          }}
+          onTimeUpdate={(event) =>
+            setCurrentTime(event.currentTarget.currentTime)
+          }
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
         />
-      </div>
+      </section>
     </>
   );
 }

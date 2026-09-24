@@ -76,26 +76,53 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto-sans), sans-serif;
+  --font-mono: var(--font-minecraft), monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Roboto Condensed", "Noto Sans JP", sans-serif;
+  font-family: var(--font-noto-sans), sans-serif;
   position: relative;
 }
 
-.site-header,
-.site-footer {
-  background: var(--background);
+.page-typography,
+.page-typography :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-noto-sans), sans-serif;
 }
 
-body:has(.audio-background) .site-header,
-body:has(.audio-background) .site-footer {
-  background: color-mix(in srgb, var(--background) 82%, transparent);
-  backdrop-filter: blur(14px);
+.site-header {
+  background: transparent;
+  font-family: var(--font-minecraft), monospace;
+}
+
+.site-header__logo {
+  /* Enlarge the wordmark without changing header height or navigation flow. */
+  transform: scale(1.25);
+  transform-origin: left center;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 rgb(23 23 23 / 18%);
+}
+
+.site-header__logo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+[data-theme="dark"] .site-header__logo {
+  text-shadow: 1px 1px 0 rgb(245 245 245 / 18%);
+}
+
+@media (min-width: 768px) {
+  .site-header__logo {
+    transform: scale(1.5);
+  }
+}
+
+.site-footer {
+  background: transparent;
 }
 
 .theme-toggle__moon {
@@ -211,65 +238,6 @@ body:has(.audio-background) .site-footer {
   --audio-navy: #495e88;
 }
 
-.audio-background {
-  position: fixed;
-  z-index: 0;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 48% 43%, rgba(247, 177, 182, 0.36), transparent 32%),
-    radial-gradient(circle at 74% 26%, rgba(255, 230, 117, 0.24), transparent 34%),
-    linear-gradient(145deg, #f9f6ee 0%, #f0eafa 52%, #e7ecfa 100%);
-}
-
-.audio-background::before,
-.audio-background::after {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  content: "";
-}
-
-.audio-background::before {
-  opacity: 0.055;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
-  mix-blend-mode: soft-light;
-}
-
-.audio-background::after {
-  background: linear-gradient(
-    90deg,
-    rgba(249, 246, 238, 0.38),
-    rgba(249, 246, 238, 0.12) 54%,
-    rgba(143, 169, 236, 0.1)
-  );
-}
-
-.audio-background__canvas {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  opacity: 0.9;
-}
-
-[data-theme="dark"] .audio-background {
-  background:
-    radial-gradient(circle at 48% 43%, rgba(130, 20, 160, 0.1), transparent 36%),
-    radial-gradient(circle at 74% 26%, rgba(74, 34, 132, 0.12), transparent 40%),
-    linear-gradient(145deg, #06040c 0%, #100a1c 52%, #05040a 100%);
-}
-
-[data-theme="dark"] .audio-background::after {
-  background: linear-gradient(
-    90deg,
-    rgba(6, 4, 12, 0.2),
-    rgba(6, 4, 12, 0.04) 54%,
-    rgba(26, 12, 38, 0.08)
-  );
-}
-
 .music-wave {
   position: fixed;
   z-index: 5;
@@ -310,8 +278,8 @@ body:has(.audio-background) .site-footer {
 
 .music-wave__bar {
   width: 52px;
-  height: 2px;
-  flex: 0 1 2px;
+  height: 4px;
+  flex: 0 1 4px;
   background: linear-gradient(90deg, #495e88 0%, #8fa9ec 52%, #f7b1b6 82%, #ffe675 100%);
   border-radius: 999px;
   box-shadow: 0 0 8px rgba(143, 169, 236, 0.26);
@@ -330,14 +298,21 @@ body:has(.audio-background) .site-footer {
   background: linear-gradient(90deg, #8fa9ec, #f7b1b6 75%, #ffe675);
 }
 
+main:has(.audio-controls) {
+  padding-bottom: 202px;
+}
+
 .audio-controls {
-  position: relative;
-  z-index: 3;
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  min-height: 58px;
-  padding: 8px;
+  position: absolute;
+  z-index: 50;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(272px, calc(100vw - 64px));
+  padding: 14px;
+  color: var(--audio-navy);
   background: rgba(249, 246, 238, 0.78);
   border: 1px solid rgba(73, 94, 136, 0.2);
   border-radius: 17px;
@@ -345,8 +320,66 @@ body:has(.audio-background) .site-footer {
   backdrop-filter: blur(18px);
 }
 
+.audio-controls__track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.audio-controls__info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.audio-controls__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.audio-controls__artist {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.audio-controls__timeline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.audio-controls__timeline input {
+  flex: 1;
+  min-width: 0;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--audio-navy);
+  cursor: pointer;
+}
+
+.audio-controls__timeline input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .audio-controls {
+  color: #e0e7fb;
+  background: rgba(16, 10, 28, 0.82);
+  border-color: rgba(143, 169, 236, 0.25);
+}
+
+[data-theme="dark"] .audio-controls__timeline input {
+  accent-color: var(--audio-lavender);
+}
+
 .audio-controls__play {
   display: inline-flex;
+  flex-shrink: 0;
   width: 42px;
   height: 42px;
   padding: 0;

@@ -20,9 +20,13 @@ export default function Home() {
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="w-full max-w-6xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 ">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex-1 flex justify-center">
+            <AudioVisualizer />
+          </div>
+
           {/* Left side - Profile Card */}
-          <Section className="flex justify-center">
+          {/* <Section className="flex justify-center">
             <div className="p-8">
               <PersonalInforCard
                 name="John Doe"
@@ -31,10 +35,10 @@ export default function Home() {
                 image={IMAGES.placeholder.profile.src as any}
               />
             </div>
-          </Section>
+          </Section> */}
           {/* Right side - Welcome Text */}
           <Section className="flex flex-col justify-center space-y-6">
-            <div>
+            {/* <div>
               <h1 className="text-5xl font-bold text-[var(--text-primary)] mb-4">
                 Welcome to My Portfolio
               </h1>
@@ -42,16 +46,15 @@ export default function Home() {
                 I'm a passionate developer and designer dedicated to creating
                 beautiful and functional digital experiences.
               </p>
-            </div>
+            </div> */}
             {/* CTA Buttons */}
             <div className="flex gap-4 pt-4">
-              <Link href="/projects">
+              {/* <Link href="/projects">
                 <PressButton variant="primary">View My Work</PressButton>
               </Link>
               <Link href="/resume">
                 <PressButton variant="secondary">My Resume</PressButton>
-              </Link>
-              <AudioVisualizer />
+              </Link> */}
             </div>
           </Section>
           {/* <ParticleRibbon className="w-full" density={1} /> */}
@@ -60,18 +63,17 @@ export default function Home() {
           </Section> */}
 
           {/* scroll down indicator */}
-          <Section className="col-span-full flex flex-col justify-center items-center gap-4">
+          {/* <Section className="col-span-full flex flex-col justify-center items-center gap-4">
             <div className="text-center">
               <p className="animate-bounce">Scroll Down</p>
             </div>
             <div className="h-12 w-0.5 relative overflow-hidden">
-              {/* The Moving Element */}
               <span className="absolute inset-0 bg-[var(--text-primary)] animate-[slide-in-out_3s_ease-out_infinite]"></span>
             </div>
-          </Section>
+          </Section> */}
 
           {/* About Me Section */}
-          <Section className="w-full max-w-6xl mx-auto px-4 py-12">
+          {/* <Section className="w-full max-w-6xl mx-auto px-4 py-12">
             <div className="flex flex-row items-center gap-6">
               <h1 className="text-4xl font-medium whitespace-nowrap">
                 ABOUT ME
@@ -86,9 +88,9 @@ export default function Home() {
               undertake. My goal is to craft innovative solutions that not only
               look great but also provide seamless user experiences.
             </p>
-          </Section>
+          </Section> */}
           {/* <MySkills /> */}
-          <Section className="w-full max-w-6xl mx-auto px-4 py-12">
+          {/* <Section className="w-full max-w-6xl mx-auto px-4 py-12">
             <div className="flex flex-row items-center gap-6">
               <h1 className="text-4xl font-medium whitespace-nowrap">SKILLS</h1>
               <MusicBarDivider />
@@ -119,10 +121,10 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </Section>
-          <Section className="col-span-full">
+          </Section> */}
+          {/* <Section className="col-span-full">
             <ProjectGallery username="Wyden13" />
-          </Section>
+          </Section> */}
         </div>
       </div>
     </div>

@@ -1,0 +1,86 @@
+.audio-background {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 48% 43%, color-mix(in srgb, var(--visualizer-glow-1) 36%, transparent), transparent 32%),
+    radial-gradient(circle at 74% 26%, color-mix(in srgb, var(--visualizer-glow-2) 24%, transparent), transparent 34%),
+    linear-gradient(145deg, var(--visualizer-start) 0%, var(--visualizer-middle) 52%, var(--visualizer-end) 100%);
+}
+
+.audio-background::before,
+.audio-background::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+}
+
+.audio-background::before {
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.audio-background::after {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--visualizer-start) 38%, transparent),
+    color-mix(in srgb, var(--visualizer-start) 12%, transparent) 54%,
+    color-mix(in srgb, var(--visualizer-end) 10%, transparent)
+  );
+}
+
+.audio-background__canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .audio-background {
+  background:
+    radial-gradient(circle at 48% 43%, color-mix(in srgb, var(--visualizer-glow-1) 10%, transparent), transparent 36%),
+    radial-gradient(circle at 74% 26%, color-mix(in srgb, var(--visualizer-glow-2) 12%, transparent), transparent 40%),
+    linear-gradient(145deg, var(--visualizer-start) 0%, var(--visualizer-middle) 52%, var(--visualizer-end) 100%);
+}
+
+[data-theme="dark"] .audio-background::after {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--visualizer-start) 20%, transparent),
+    color-mix(in srgb, var(--visualizer-start) 4%, transparent) 54%,
+    color-mix(in srgb, var(--visualizer-end) 8%, transparent)
+  );
+}
+
+/* Temporary, removable palette controls. */
+.visualizer-colors {
+  position: absolute;
+  z-index: 60;
+  right: 0;
+  bottom: calc(100% + 12px);
+  width: min(320px, calc(100vw - 64px));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  background: var(--surface);
+  box-shadow: 0 8px 32px #0003;
+  font-size: 13px;
+}
+.visualizer-colors:not([open]) { width: auto; }
+.visualizer-colors summary { cursor: pointer; padding: 12px 16px; font-weight: 600; }
+.visualizer-colors__panel { padding: 0 16px 12px; max-height: min(60dvh, calc(100dvh - 220px)); overflow-y: auto; }
+.visualizer-colors__panel > p { margin: 0 0 12px; }
+.visualizer-colors__field { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.visualizer-colors__field label { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 8px; }
+.visualizer-colors input[type="color"] { width: 32px; height: 30px; padding: 2px; cursor: pointer; border: 1px solid var(--border); flex-shrink: 0; }
+.visualizer-colors input[type="text"] { width: 76px; padding: 5px; border: 1px solid var(--border); background: var(--background); font-family: monospace; }
+.visualizer-colors input[aria-invalid="true"] { outline: 2px solid #c44; }
+.visualizer-colors__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 8px; }
+.visualizer-colors button { border: 1px solid var(--border); border-radius: 5px; padding: 8px; cursor: pointer; background: var(--surface-hover); }
+.visualizer-colors :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.visualizer-colors__status { min-height: 2.5em; color: var(--text-secondary); }
