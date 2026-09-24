@@ -6,7 +6,12 @@ export default function Resume() {
       <a href="/resume.pdf" download className="mb-4 inline-block">
         <PressButton variant="primary">Download Resume</PressButton>
       </a>
-      <iframe src="/resume.pdf" title="Resume" width="100%" height="800px" />
+      <iframe
+        src="/Technical_resume.pdf"
+        title="Resume"
+        width="100%"
+        height="800px"
+      />
     </div>
   );
 }

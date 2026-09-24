@@ -11,6 +11,9 @@ export default function Header() {
         className="flex w-full items-center justify-between gap-3 text-sm sm:w-auto sm:justify-end sm:gap-8 sm:text-base"
         aria-label="Main navigation"
       >
+        <Link href="/resume" className="hover:text-[var(--text-secondary)]">
+          Resume
+        </Link>
         <Link href="/projects" className="hover:text-[var(--text-secondary)]">
           Projects
         </Link>

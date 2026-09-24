@@ -452,10 +452,8 @@ export default function AudioVisualizer() {
         <VisualizerColors theme={theme} {...colors} />
         <div className="audio-controls__track">
           <div className="audio-controls__info">
-            <span className="audio-controls__title">Love Letter</span>
-            <span className="audio-controls__artist">
-              YOASOBI · Instrumental
-            </span>
+            <span className="audio-controls__title">Tabun</span>
+            <span className="audio-controls__artist">YOASOBI</span>
           </div>
           <AudioPlayerButton isPlaying={isPlaying} onToggle={togglePlayback} />
         </div>

@@ -248,11 +248,8 @@ body {
   gap: 11px;
   align-items: center;
   color: #495e88;
-  padding: 0 8px;
-  background: rgba(249, 246, 238, 0.74);
-  border: 1px solid rgba(73, 94, 136, 0.16);
-  border-radius: 0;
-  box-shadow: 0 10px 30px rgba(73, 94, 136, 0.13);
+  padding: 16px 8px;
+  background: transparent;
   backdrop-filter: blur(12px);
   pointer-events: none;
 }
@@ -290,7 +287,7 @@ body {
 }
 
 [data-theme="dark"] .music-wave {
-  background: rgba(16, 10, 28, 0.55);
+  /* background: rgba(16, 10, 28, 0.55); */
   border-color: rgba(143, 169, 236, 0.16);
 }
 
