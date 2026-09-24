@@ -15,7 +15,7 @@ export default function RootLayout({
       className={`${minecraftFont.variable} ${notoSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="relative flex min-h-screen flex-col bg-[var(--background)] text-[var(--text-primary)]">
+      <body className="relative flex min-h-dvh flex-col bg-[var(--background)] text-[var(--text-primary)]">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="system"

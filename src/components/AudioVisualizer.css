@@ -59,7 +59,8 @@
 
 @media (width < 1024px) {
   body:has(.audio-dock) .site-footer {
-    padding-bottom: calc(var(--audio-dock-height, 202px) + max(24px, env(safe-area-inset-bottom)) + 24px);
+    padding-inline: max(84px, calc(env(safe-area-inset-right) + 72px), calc(env(safe-area-inset-left) + 72px));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
   }
 }
 
@@ -150,8 +151,8 @@
 .audio-controls__play {
   display: inline-flex;
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   align-items: center;
   justify-content: center;
@@ -198,12 +199,6 @@
   fill: currentColor;
 }
 
-@media (max-width: 560px) {
-  .audio-controls {
-    max-width: 100%;
-  }
-}
-
 /* Temporary, removable palette controls. */
 .visualizer-colors {
   position: relative;
@@ -229,3 +224,70 @@
 .visualizer-colors button { border: 1px solid var(--border); border-radius: 5px; padding: 8px; cursor: pointer; background: var(--surface-hover); }
 .visualizer-colors :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .visualizer-colors__status { min-height: 2.5em; color: var(--text-secondary); }
+
+/* Match the compact navigation layout on phones and tablets. */
+@media (width < 1024px) {
+  .audio-dock {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    width: 56px;
+    gap: 12px;
+  }
+
+  .audio-controls__info,
+  .audio-controls__timeline {
+    display: none;
+  }
+
+  .audio-dock .visualizer-colors {
+    flex-shrink: 0;
+    width: 56px;
+  }
+
+  .audio-dock .visualizer-colors[open] {
+    width: min(320px, calc(100vw - max(16px, env(safe-area-inset-left)) - max(16px, env(safe-area-inset-right))));
+  }
+
+  .audio-dock .visualizer-colors summary {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    list-style: none;
+  }
+
+  .audio-dock .visualizer-colors summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .audio-dock .visualizer-colors[open] summary {
+    justify-content: flex-end;
+    padding-inline: 16px;
+  }
+
+  .audio-dock .visualizer-colors__field input[type="text"] {
+    font-size: 16px;
+  }
+
+  .audio-dock .audio-controls {
+    width: 56px;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .audio-controls__play {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  .audio-controls__play svg {
+    width: 22px;
+    height: 22px;
+  }
+}

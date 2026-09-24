@@ -52,15 +52,15 @@ export default async function PostPage({ params }: PostPageProps) {
         <article className="w-full">
           {/* Title section with metadata */}
           <div className="mb-8">
-            <h1 className="mb-4 text-5xl font-bold text-[var(--text-primary)]">
+            <h1 className="mb-4 text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)]">
               {title}
             </h1>
-            <div className="flex items-center gap-4 pb-4 border-b border-[var(--border)]">
+            <div className="flex flex-wrap items-center gap-4 pb-4 border-b border-[var(--border)]">
               <span className="text-sm text-[var(--text-muted)]">
                 {formattedDate}
               </span>
               {tags && tags.length > 0 && (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
                     <span
                       key={tag}

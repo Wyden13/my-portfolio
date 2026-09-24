@@ -1,28 +1,84 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "../ui/ThemeToggle";
 
+const links = [
+  { href: "/resume", label: "Resume" },
+  { href: "/projects", label: "Projects" },
+  { href: "/posts", label: "Posts" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function Header() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: PointerEvent) {
+      if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    }
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    function onResize() {
+      if (desktop.matches) setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    desktop.addEventListener("change", onResize);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      desktop.removeEventListener("change", onResize);
+    };
+  }, [open]);
+
   return (
-    <header className="site-header relative z-10 flex flex-col items-start gap-5 px-4 py-6 text-[var(--text-primary)] sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-      <Link href="/" className="site-header__logo shrink-0 text-2xl font-bold">
+    <header
+      ref={headerRef}
+      className="site-header"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
+    >
+      <Link href="/" className="site-header__logo font-bold" onClick={() => setOpen(false)}>
         Wendy Nguyen
       </Link>
-      <nav
-        className="flex w-full items-center justify-between gap-3 text-sm sm:w-auto sm:justify-end sm:gap-8 sm:text-base"
-        aria-label="Main navigation"
+      <button
+        ref={toggleRef}
+        type="button"
+        className="site-header__menu-toggle"
+        aria-label={open ? "Close navigation" : "Open navigation"}
+        aria-expanded={open}
+        aria-controls="main-navigation"
+        onClick={() => setOpen(!open)}
       >
-        <Link href="/resume" className="hover:text-[var(--text-secondary)]">
-          Resume
-        </Link>
-        <Link href="/projects" className="hover:text-[var(--text-secondary)]">
-          Projects
-        </Link>
-        <Link href="/posts" className="hover:text-[var(--text-secondary)]">
-          Posts
-        </Link>
-        <Link href="/contact" className="hover:text-[var(--text-secondary)]">
-          Contact
-        </Link>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+          <path d={open ? "M6 6l12 12M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
+        </svg>
+      </button>
+      <nav id="main-navigation" className="site-header__nav" data-open={open} aria-label="Main navigation">
+        {links.map(({ href, label }) => (
+          <Link
+            key={href}
+            href={href}
+            aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined}
+            onClick={() => setOpen(false)}
+          >
+            {label}
+          </Link>
+        ))}
         <ThemeToggle />
       </nav>
     </header>

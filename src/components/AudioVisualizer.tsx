@@ -386,33 +386,12 @@ function AudioVisualizerClient() {
   const theme = resolvedTheme === "dark" ? "dark" : "light";
   const colors = useVisualizerPalette(theme);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const dockRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  useEffect(() => {
-    const dock = dockRef.current;
-    if (!dock) return;
-
-    const measure = () => {
-      document.body.style.setProperty(
-        "--audio-dock-height",
-        `${Math.ceil(dock.getBoundingClientRect().height)}px`,
-      );
-    };
-    const observer = new ResizeObserver(measure);
-    observer.observe(dock);
-    measure();
-
-    return () => {
-      observer.disconnect();
-      document.body.style.removeProperty("--audio-dock-height");
-    };
-  }, []);
 
   const prepareAudio = () => {
     const audio = audioRef.current;
@@ -482,7 +461,7 @@ function AudioVisualizerClient() {
       />
 
       {createPortal(
-        <div className="audio-dock" ref={dockRef}>
+        <div className="audio-dock">
           <VisualizerColors theme={theme} {...colors} />
           <section className="audio-controls" aria-label="Audio player">
             <div className="audio-controls__track">

@@ -50,7 +50,7 @@ export default function BlogsPage() {
       {/* Introduction */}
       <section className="mt-12 mb-8">
         <div className="flex items-center gap-4">
-          <h2 className="shrink-0 text-3xl font-semibold md:text-5xl">
+          <h2 className="min-w-0 text-2xl sm:text-3xl font-semibold md:text-5xl">
             Latest Projects
           </h2>
           <MusicBarDivider />
