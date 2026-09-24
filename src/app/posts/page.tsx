@@ -2,6 +2,7 @@
 import MusicBarDivider from "@/components/ui/MusicBarDivider";
 import SearchBar from "@/components/SearchBar";
 import Link from "next/link";
+import { withBasePath } from "@/lib/base-path";
 
 const BLOG_POSTS = [
   {
@@ -37,7 +38,7 @@ export default function BlogsPage() {
       {/* Banner */}
       <div className="relative overflow-hidden rounded-2xl aspect-[4/3] md:aspect-[7/2]">
         <img
-          src="/minecraft_wp.jpg"
+          src={withBasePath("/minecraft_wp.jpg")}
           alt="Projects banner"
           className="h-full w-full object-cover"
         />

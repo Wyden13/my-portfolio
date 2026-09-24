@@ -1,6 +1,7 @@
 import MusicBarDivider from "@/components/ui/MusicBarDivider";
 import ProjectCard from "@/components/ui/ProjectCard";
 import ProjectGallery from "@/components/ProjectGallery";
+import { withBasePath } from "@/lib/base-path";
 
 export default function ProjectPage() {
   return (
@@ -8,7 +9,7 @@ export default function ProjectPage() {
       {/* Banner */}
       <div className="relative overflow-hidden rounded-2xl aspect-[4/3] md:aspect-[7/2]">
         <img
-          src="/wallpaper.jpg"
+          src={withBasePath("/wallpaper.jpg")}
           alt="Projects banner"
           className="h-full w-full object-cover"
         />

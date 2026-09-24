@@ -30,6 +30,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 function AudioAnalysis({
   analyserRef,
@@ -481,7 +482,7 @@ export default function AudioVisualizer() {
           ref={audioRef}
           preload="metadata"
           playsInline
-          src="/yoasobi_tabun.mp3"
+          src={withBasePath("/yoasobi_tabun.mp3")}
           onDurationChange={(event) => {
             const value = event.currentTarget.duration;
             setDuration(Number.isFinite(value) ? value : 0);

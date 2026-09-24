@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import { withBasePath } from "@/lib/base-path";
 
 export interface AppImage {
   src: string | StaticImageData;
@@ -9,7 +10,7 @@ export interface AppImage {
 export const IMAGES = {
   placeholder: {
     profile: {
-      src: "/ado.jpg",
+      src: withBasePath("/ado.jpg"),
       alt: "Profile picture placeholder",
     },
   },
