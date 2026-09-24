@@ -8,12 +8,13 @@ import Image from "next/image";
 import Link from "next/dist/client/link";
 import AudioVisualizer from "@/components/AudioVisualizer";
 import ParticleRibbon from "@/components/ParticleRibbon";
+import { withBasePath } from "@/lib/base-path";
 
 const SKILLS = [
-  { name: "TypeScript", icon: "/typescript-2.png" },
-  { name: "Docker", icon: "/social.png" },
-  { name: "React", icon: "/physics.png" },
-  { name: "Next.js", icon: "/nextjs-13.svg" },
+  { name: "TypeScript", icon: withBasePath("/typescript-2.png") },
+  { name: "Docker", icon: withBasePath("/social.png") },
+  { name: "React", icon: withBasePath("/physics.png") },
+  { name: "Next.js", icon: withBasePath("/nextjs-13.svg") },
 ];
 
 export default function Home() {
