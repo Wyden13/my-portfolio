@@ -371,16 +371,48 @@ function formatTime(seconds: number) {
 }
 
 export default function AudioVisualizer() {
+  const isClient = useSyncExternalStore(
+    subscribeToClient,
+    () => true,
+    () => false,
+  );
+
+  // Theme and saved palettes are browser state; mount them after hydration.
+  return isClient ? <AudioVisualizerClient /> : null;
+}
+
+function AudioVisualizerClient() {
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme === "dark" ? "dark" : "light";
   const colors = useVisualizerPalette(theme);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const dock = dockRef.current;
+    if (!dock) return;
+
+    const measure = () => {
+      document.body.style.setProperty(
+        "--audio-dock-height",
+        `${Math.ceil(dock.getBoundingClientRect().height)}px`,
+      );
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(dock);
+    measure();
+
+    return () => {
+      observer.disconnect();
+      document.body.style.removeProperty("--audio-dock-height");
+    };
+  }, []);
 
   const prepareAudio = () => {
     const audio = audioRef.current;
@@ -449,52 +481,57 @@ export default function AudioVisualizer() {
         palette={colors.palette}
       />
 
-      <section className="audio-controls" aria-label="Audio player">
-        <VisualizerColors theme={theme} {...colors} />
-        <div className="audio-controls__track">
-          <div className="audio-controls__info">
-            <span className="audio-controls__title">Tabun</span>
-            <span className="audio-controls__artist">YOASOBI</span>
-          </div>
-          <AudioPlayerButton isPlaying={isPlaying} onToggle={togglePlayback} />
-        </div>
-        <div className="audio-controls__timeline">
-          <span>{formatTime(currentTime)}</span>
-          <input
-            type="range"
-            aria-label="Seek music"
-            aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
-            min={0}
-            max={duration || 1}
-            step={0.1}
-            value={currentTime}
-            disabled={!duration}
-            onChange={(event) => {
-              const time = Number(event.target.value);
-              if (audioRef.current) audioRef.current.currentTime = time;
-              setCurrentTime(time);
-            }}
-          />
-          <span>{formatTime(duration)}</span>
-        </div>
+      {createPortal(
+        <div className="audio-dock" ref={dockRef}>
+          <VisualizerColors theme={theme} {...colors} />
+          <section className="audio-controls" aria-label="Audio player">
+            <div className="audio-controls__track">
+              <div className="audio-controls__info">
+                <span className="audio-controls__title">Tabun</span>
+                <span className="audio-controls__artist">YOASOBI</span>
+              </div>
+              <AudioPlayerButton isPlaying={isPlaying} onToggle={togglePlayback} />
+            </div>
+            <div className="audio-controls__timeline">
+              <span>{formatTime(currentTime)}</span>
+              <input
+                type="range"
+                aria-label="Seek music"
+                aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
+                min={0}
+                max={duration || 1}
+                step={0.1}
+                value={currentTime}
+                disabled={!duration}
+                onChange={(event) => {
+                  const time = Number(event.target.value);
+                  if (audioRef.current) audioRef.current.currentTime = time;
+                  setCurrentTime(time);
+                }}
+              />
+              <span>{formatTime(duration)}</span>
+            </div>
 
-        <audio
-          ref={audioRef}
-          preload="metadata"
-          playsInline
-          src={withBasePath("/yoasobi_tabun.mp3")}
-          onDurationChange={(event) => {
-            const value = event.currentTarget.duration;
-            setDuration(Number.isFinite(value) ? value : 0);
-          }}
-          onTimeUpdate={(event) =>
-            setCurrentTime(event.currentTarget.currentTime)
-          }
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => setIsPlaying(false)}
-        />
-      </section>
+            <audio
+              ref={audioRef}
+              preload="metadata"
+              playsInline
+              src={withBasePath("/yoasobi_tabun.mp3")}
+              onDurationChange={(event) => {
+                const value = event.currentTarget.duration;
+                setDuration(Number.isFinite(value) ? value : 0);
+              }}
+              onTimeUpdate={(event) =>
+                setCurrentTime(event.currentTarget.currentTime)
+              }
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
+            />
+          </section>
+        </div>,
+        document.body,
+      )}
     </>
   );
 }

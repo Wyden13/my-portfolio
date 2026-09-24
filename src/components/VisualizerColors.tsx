@@ -13,7 +13,7 @@ import {
   type VisualizerPalette,
 } from "@/lib/visualizer-palette";
 
-// Mounted inside the client-only background portal, so storage is read after hydration.
+// Used inside AudioVisualizerClient, which mounts only after hydration.
 export function useVisualizerPalette(theme: PaletteTheme) {
   const [palettes, setPalettes] = useState(() => {
     try {
